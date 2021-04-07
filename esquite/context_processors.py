@@ -1,5 +1,4 @@
 import logging
-import re
 from datetime import date
 from django.conf import settings
 from .helpers import get_user_file, get_user_files
@@ -50,17 +49,15 @@ def google_analytics(request):
 
 def user_templates(request):
     views = ["about", "help", "links", "participants"]
-    regex = re.compile("[\w+\.\\n+\b+]$", re.MULTILINE)
     user_views = {}
     for view in views:
         path = f"{settings.BASE_DIR}/templates/user/{view}-user.html"
         try:
             with open(path, 'r') as html:
                 html_view = html.read()
-                html_view = regex.sub("<br>", html_view)
                 html_view += "<br>"
         except FileNotFoundError:
-            LOGGER.error(f"No se encontró el template de usuario {view}")
+            LOGGER.warning(f"No se encontró el template de usuario {view}")
             html_view = ""
         name = view.upper() + "_USER"
         user_views[name] = html_view

@@ -33,10 +33,10 @@ def list_docs(request):
     # Errores en las variables de entorno del proyecto
     if settings.WRONG_CONFIGS['error']:
         msg = "Configuraciones necesarias para sitio no se encuentran en \
-        el archivo <code>env.yaml</code>."
+        el archivo <code>env.yaml</code>.<br/>"
         str_fields = ", ".join(settings.WRONG_CONFIGS['error'])
-        msg += f" Modifica los campos: {str_fields} o ejecuta el asistente \
-            <code>wizard.py</code>."
+        msg += f" Modifica los campos: <b>{str_fields}</b> o ejecuta el \
+            asistente <code>wizard.py</code>."
         messages.error(request, msg)
         conf_docs_link = "https://esquite.readthedocs.io/es/latest/wizard.html#configuraciones"
         messages.info(request, f"TIP: Revisar la documentación <a href='{conf_docs_link}'>aqui<a>")
