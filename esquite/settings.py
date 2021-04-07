@@ -16,7 +16,7 @@ except FileNotFoundError:
     env = set_minimal_env(secrets.token_urlsafe(50))
 
 
-DEBUG = eval(env['DEBUG'])
+DEBUG = env['DEBUG']
 if DEBUG:
     ALLOWED_HOSTS = []
 else:
