@@ -82,28 +82,35 @@ def env_validator(env_configs):
     :returns: Campos incorrectamente configurados
     :rtype: list
     """
-    wrong_configs = dict()
-    error_configs, empty_configs = list(), list()
     minimal_fields = {"URL", "INDEX", "L1", "L2", "API", "DEBUG", "SECRET_KEY"}
     default_env = set_minimal_env()
     default_fields = default_env.keys()
-    for field in default_fields:
-        # Field is not in minimal env vars
-        if field not in env_configs.keys():
-            error_configs.append(field)
-            # Secret Key must be setting
-            if field == "SECRET_KEY":
-                env_configs[field] = secrets.token_urlsafe(50)
-            # Minimal fields must be setting. Using defaults
-            elif field in minimal_fields:
-                env_configs[field] = default_env[field]
-            else:
-                # For optional fields set at least empty
-                env_configs[field] = ""
-        # Field is empty
-        elif env_configs[field] == "" or env_configs[field] == {}:
-            empty_configs.append(field)
-    wrong_configs = {"warn": empty_configs, "error": error_configs}
+    if env_configs:
+        wrong_configs = dict()
+        error_configs, empty_configs = list(), list()
+        for field in default_fields:
+            # Field is not in minimal env vars
+            if field not in env_configs.keys():
+                error_configs.append(field)
+                # Secret Key must be setting
+                if field == "SECRET_KEY":
+                    env_configs[field] = secrets.token_urlsafe(50)
+                # Minimal fields must be setting. Using defaults
+                elif field in minimal_fields:
+                    env_configs[field] = default_env[field]
+                else:
+                    # For optional fields set at least empty
+                    env_configs[field] = ""
+            # Field is empty
+            elif env_configs[field] == "" or env_configs[field] == {}:
+                empty_configs.append(field)
+        wrong_configs = {"warn": empty_configs, "error": error_configs}
+    # Env file is all empty
+    else:
+        # Using defaults as temp settings
+        env_configs = default_env
+        wrong_configs = {"warn": set(default_env.keys()) - minimal_fields,
+                         "error": minimal_fields}
     return env_configs, wrong_configs
 
 
